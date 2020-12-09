@@ -20,7 +20,7 @@ function main() {
         cameraSetting.near,
         cameraSetting.far
     );
-    camera.position.z = 100;
+    camera.position.z = 140;
 
     // scene 생성
     const scene = new THREE.Scene();
@@ -77,26 +77,6 @@ function main() {
             outerRadius: 7,
             segments: 18,
         },
-        font: {
-            loader: new THREE.FontLoader(),
-            text: 'maxst',
-            load: () => {
-                this.loader.load('https://threejsfundamentals.org/threejs/resources/threejs/fonts/helvetiker_regular.typeface.json', (font) => {
-                    const text = 'maxst';
-                    const geometry = new THREE.TextBufferGeometry(text, {
-                        font: font,
-                        size: 3,
-                        height: 1,
-                        curveSegments: 12,
-                        bevelEnabled: true,
-                        bevelThickness: 0.15,
-                        bevelSize: 0.3,
-                        bevelSegments: 5,
-                    })
-                    return geometry
-                })
-            }
-        }
     };
 
     // 객체 생성
@@ -129,7 +109,6 @@ function main() {
             settings.flattube.outerRadius,
             settings.flattube.segments,
         ),
-        font: settings.font.load
     };
 
     // font 객체 따로 추가.

@@ -1,8 +1,11 @@
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/build/three.module.js';
+import { GUI } from 'https://threejsfundamentals.org/threejs/../3rdparty/dat.gui.module.js';
+
 
 function main() {
     const canvas = document.getElementById('c');
     const renderer = new THREE.WebGLRenderer({ canvas });
+    const gui = new GUI();
 
     // 카메라 세팅
     const cameraSetting = {
@@ -49,8 +52,12 @@ function main() {
         heightSegments
     );
 
-    // 태양 material
+    // 태양계라는 빈 Object3D 객체 생성
+    const solarSystem = new THREE.Object3D();
+    scene.add(solarSystem);
+    objects.push(solarSystem);
 
+    // 태양 객체
     /**
      * MeshPhongMaterial의 emissive(방사성) 속성(property)을 노랑으로 지정합니다. 퐁-메터리얼의
      * emissive 속성은 빛을 반사하지 않는 표면 색상으로, 대신 광원에 해당 색상이 더해집니다.
@@ -60,10 +67,17 @@ function main() {
     });
     const sunMesh = new THREE.Mesh(sphereGeometry, sunMaterial);
     sunMesh.scale.set(5, 5, 5); // 태양의 크기를 키움. 지역 공간 자체를 5배 키움. 지구도 5배가 됨..
-    scene.add(sunMesh);
+    // scene.add(sunMesh);
+    solarSystem.add(sunMesh);
     objects.push(sunMesh);
 
-    // 지구 material
+    // 지구 궤도 (지구계?)
+    const earthOrbit = new THREE.Object3D();
+    earthOrbit.position.x = 10;
+    solarSystem.add(earthOrbit);
+    objects.push(earthOrbit);
+
+    // 지구 객체
     const earthMaterial = new THREE.MeshPhongMaterial({
         color: 0x2233ff,
         emissive: 0x112244,
@@ -71,8 +85,59 @@ function main() {
     const earthMesh = new THREE.Mesh(sphereGeometry, earthMaterial);
     earthMesh.position.x = 10;
     // scene.add(earthMesh);
-    sunMesh.add(earthMesh);
+    // sunMesh.add(earthMesh);
+    solarSystem.add(earthMesh);
     objects.push(earthMesh);
+
+    // 달 궤도
+    const moonOrbit = new THREE.Object3D();
+    moonOrbit.position.x = 2;
+    earthOrbit.add(moonOrbit);
+
+    // 달 객체
+    const moonMaterial = new THREE.MeshPhongMaterial({ color: 0x888888 });
+    const moonMesh = new THREE.Mesh(sphereGeometry, moonMaterial);
+    moonMesh.scale.set(0.5, 0.5, 0.5);
+    moonOrbit.add(moonMesh);
+    objects.push(moonMesh);
+
+    class AxisGridHelper {
+        constructor(node, units = 10) {
+            const axes = new THREE.AxesHelper();
+            axes.material.depthTest = false;
+            axes.renderOrder = 2; // after the grid
+            node.add(axes);
+
+            const grid = new THREE.GridHelper(units, units);
+            grid.material.depthTest = false;
+            grid.renderOrder = 1;
+            node.add(grid);
+
+            this.grid = grid;
+            this.axes = axes;
+            this.visible = false;
+        }
+        get visible() {
+            return this._visible;
+        }
+        set visible(v) {
+            this._visible = v;
+            this.grid.visible = v;
+            this.axes.visible = v;
+        }
+    }
+
+    function makeAxisGrid(node, label, units) {
+        const helper = new AxisGridHelper(node, units);
+        gui.add(helper, 'visible').name(label);
+    }
+
+    makeAxisGrid(solarSystem, 'solarSystem', 26);
+    makeAxisGrid(sunMesh, 'sunMesh');
+    makeAxisGrid(earthOrbit, 'earthOrbit');
+    makeAxisGrid(earthMesh, 'earthMesh');
+    makeAxisGrid(moonOrbit, 'moonOrbit');
+    makeAxisGrid(moonMesh, 'moonMesh');
 
     function resizeRendererToDisplaySize(renderer) {
         const canvas = renderer.domElement;
@@ -97,7 +162,6 @@ function main() {
         objects.forEach((obj) => {
             obj.rotation.y = time;
         });
-
         renderer.render(scene, camera);
 
         requestAnimationFrame(render);

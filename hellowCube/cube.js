@@ -63,7 +63,7 @@ function main() {
         depth: 1,
     };
 
-    function createMaterial(geometry, color, x) {
+    function makeInstance(geometry, color, x) {
         const material = new THREE.MeshPhongMaterial({ color });
 
         // Geometry(물체의 형태)와 Material(물체의 색. 질감 등)을 이용해 Mesh를 만듦.

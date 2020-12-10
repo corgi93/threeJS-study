@@ -20,7 +20,7 @@ function main() {
         cameraSetting.near,
         cameraSetting.far
     );
-    camera.position.z = 140;
+    camera.position.z = 120;
 
     // scene 생성
     const scene = new THREE.Scene();

@@ -7,7 +7,7 @@ function main() {
 
     // 카메라 세팅
     const cameraSetting = {
-        fov: 40,
+        fov: 40, // 시야각 40도
         aspect: 2,
         near: 0.1,
         far: 1000,

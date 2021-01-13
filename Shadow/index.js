@@ -12,7 +12,6 @@ function main() {
         aspect: 2, // canvas 디폴트 값
         near: 0.1,
         far: 100
-
     }
     const camera = new THREE.PerspectiveCamera(
         cameraSettings.fov,
